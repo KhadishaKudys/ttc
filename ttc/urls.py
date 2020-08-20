@@ -16,8 +16,29 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include 
 from .router import router
+from django.views.generic import TemplateView
+from rest_framework.authtoken.views import obtain_auth_token
+from django.contrib.auth import views as auth_views
+
+from core.views import PostView, GoogleLogin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
+    path('', PostView .as_view(), name='test'),
+    # path('', include('django.contrib.auth.urls')),
+    path('api/token/', obtain_auth_token, name='obtain-token'),
+    path('rest-auth/', include('rest_auth.urls')),
+    path('rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
+    # path('password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+    #     TemplateView.as_view(template_name="password_reset_confirm.html"),
+    #     name='password_reset_confirm'),
+    # path('rest-auth/password/reset/', include('rest_auth.password.reset.urls')),
+    path('reset_password/', auth_views.PasswordResetView.as_view(), name='reset_password'),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
